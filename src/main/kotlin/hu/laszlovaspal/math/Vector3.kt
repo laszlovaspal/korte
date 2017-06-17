@@ -8,8 +8,8 @@ interface Vector3 {
     operator fun unaryMinus(): Vector3
     operator fun plus(v: Vector3): Vector3
     operator fun minus(v: Vector3): Vector3
-    fun dot(v: Vector3): Double
-    fun cross(v: Vector3): Vector3
+    infix fun dot(v: Vector3): Double
+    infix fun cross(v: Vector3): Vector3
 }
 
 data class Vector3Impl(
