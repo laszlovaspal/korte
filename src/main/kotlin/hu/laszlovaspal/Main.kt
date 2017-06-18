@@ -1,9 +1,8 @@
 package hu.laszlovaspal
 
-import hu.laszlovaspal.math.Vector3
 import hu.laszlovaspal.renderer.Renderer
 import hu.laszlovaspal.renderer.SimpleSequentialRenderer
-import hu.laszlovaspal.renderer.tracer.Camera
+import hu.laszlovaspal.scene.SimpleScene
 import javafx.application.Application
 import javafx.scene.Group
 import javafx.scene.Scene
@@ -17,17 +16,11 @@ fun main(args: Array<String>) {
 
 class UIWindow : Application() {
 
-    val camera = Camera(
-            width = 800, height = 500,
-            position = Vector3(0.0, 0.0, 0.0),
-            direction = Vector3(0.0, 0.0, 1.0),
-            up = Vector3(0.0, 1.0, 0.0)
-    )
-
-    val renderer: Renderer = SimpleSequentialRenderer(camera)
+    val scene = SimpleScene()
+    val renderer: Renderer = SimpleSequentialRenderer(scene)
 
     override fun start(primaryStage: Stage) {
-        val canvas = Canvas(camera.width.toDouble(), camera.height.toDouble())
+        val canvas = Canvas(scene.camera.width.toDouble(), scene.camera.height.toDouble())
         val pixelWriter = canvas.graphicsContext2D.pixelWriter
 
         renderer.renderFrame(pixelWriter)

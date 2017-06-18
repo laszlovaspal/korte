@@ -1,11 +1,9 @@
 package hu.laszlovaspal.renderer.tracer
 
 import hu.laszlovaspal.math.Vector3
-import hu.laszlovaspal.shape.Sphere
+import hu.laszlovaspal.scene.Scene
+import hu.laszlovaspal.shape.Traceable
 import javafx.scene.paint.Color
-
-val sphere = Sphere(Vector3(0.0, 0.0, 100.0), 10.0)
-val light = LightSource(Vector3(-100.0, 100.0, 20.0))
 
 data class TraceResult(val color: Color) {
     companion object {
@@ -13,22 +11,40 @@ data class TraceResult(val color: Color) {
     }
 }
 
-class RayTracer(val maxDepthOfRecursion: Int) {
+class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene) {
 
     fun trace(ray: Ray) = trace(ray, maxDepthOfRecursion)
 
     private fun trace(ray: Ray, currentDepthOfRecursion: Int): TraceResult {
-        val intersection = sphere.intersect(ray) ?: return TraceResult.INFINITY
+        val intersection = findClosestIntersection(ray, scene.objects) ?: return TraceResult.INFINITY
 
-        val normal = sphere.normalAt(intersection.point)
-        val rayToLightStartPoint = intersection.point + (normal * 0.01)
+        var color = Color.BLACK
+        for (light in scene.lights) {
+            val rayToLight = createRayToLight(intersection, light)
+            var cosTheta = rayToLight.direction dot intersection.normal
+            if (cosTheta < 0) cosTheta = 0.0
 
-        val rayToLight = Ray(rayToLightStartPoint, (light.position - rayToLightStartPoint).normalize())
-        var cosTheta = rayToLight.direction dot normal
-        if (cosTheta < 0) cosTheta = 0.0
+            color += Color.WHITE * cosTheta
+        }
 
-        val closestIntersectedColor = Color.WHITE * cosTheta
-
-        return TraceResult(Color.BLACK + closestIntersectedColor)
+        return TraceResult(color)
     }
+
+    private fun findClosestIntersection(ray: Ray, objects: List<Traceable>): Intersection? {
+        val closest = objects.map { it.intersect(ray) }
+                .filterNotNull()
+                .sortedBy { it.distanceFromCamera }
+                .firstOrNull() ?: return null
+
+        val intersectionPoint = ray.startPoint + ray.direction * closest.distanceFromCamera
+        return Intersection(intersectionPoint, closest.traceable.normalAt(intersectionPoint))
+    }
+
+    private fun createRayToLight(intersection: Intersection, light: LightSource): Ray {
+        val rayToLightStartPoint = intersection.point + (intersection.normal * 0.01)
+        return Ray(rayToLightStartPoint, (light.position - rayToLightStartPoint).normalize())
+    }
+
 }
+
+data class Intersection(val point: Vector3, val normal: Vector3)

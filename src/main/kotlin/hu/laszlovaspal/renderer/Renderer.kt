@@ -1,9 +1,9 @@
 package hu.laszlovaspal.renderer
 
-import hu.laszlovaspal.renderer.tracer.Camera
+import hu.laszlovaspal.scene.Scene
 import javafx.scene.image.PixelWriter
 
 interface Renderer {
-    val camera: Camera
+    val scene: Scene
     fun renderFrame(pixelWriter: PixelWriter)
 }
