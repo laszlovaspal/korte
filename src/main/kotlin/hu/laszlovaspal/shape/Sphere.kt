@@ -1,9 +1,9 @@
 package hu.laszlovaspal.shape
 
 import hu.laszlovaspal.math.Vector3
-import hu.laszlovaspal.tracer.Ray
+import hu.laszlovaspal.renderer.tracer.Ray
 
-class Sphere(val position: Vector3, val radius: Double) : Renderable {
+class Sphere(val position: Vector3, val radius: Double) : Traceable {
 
     override fun intersect(ray: Ray): Intersection? { // todo clean up
         val tmp = ray.startPoint - position

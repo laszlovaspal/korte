@@ -1,9 +1,9 @@
 package hu.laszlovaspal.shape
 
 import hu.laszlovaspal.math.Vector3
-import hu.laszlovaspal.tracer.Ray
+import hu.laszlovaspal.renderer.tracer.Ray
 
-interface Renderable {
+interface Traceable {
     fun intersect(ray: Ray): Intersection?
     fun normalAt(point: Vector3): Vector3
 }
