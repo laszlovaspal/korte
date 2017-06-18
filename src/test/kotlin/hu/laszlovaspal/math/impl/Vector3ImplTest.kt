@@ -50,4 +50,20 @@ class Vector3ImplTest {
         )
     }
 
+    @Test
+    fun times() {
+        assertEquals(
+                Vector3Impl(2.0, 2.0, 0.0),
+                Vector3Impl(1.0, 1.0, 0.0) * 2.0
+        )
+    }
+
+    @Test
+    fun normalize() {
+        assertEquals(
+                Vector3Impl(1.0, 0.0, 0.0),
+                Vector3Impl(12.0, 0.0, 0.0).normalize()
+        )
+    }
+
 }
