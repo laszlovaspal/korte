@@ -1,8 +1,7 @@
 package hu.laszlovaspal.renderer.tracer
 
-import hu.laszlovaspal.math.Vector3
 import hu.laszlovaspal.scene.Scene
-import hu.laszlovaspal.shape.Traceable
+import hu.laszlovaspal.shape.Intersection
 import javafx.scene.paint.Color
 
 data class TraceResult(val color: Color) {
@@ -16,7 +15,7 @@ class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene) {
     fun trace(ray: Ray) = trace(ray, maxDepthOfRecursion)
 
     private fun trace(ray: Ray, currentDepthOfRecursion: Int): TraceResult {
-        val intersection = findClosestIntersection(ray, scene.objects) ?: return TraceResult.INFINITY
+        val intersection = findClosestIntersection(ray) ?: return TraceResult.INFINITY
 
         var color = Color.BLACK
         for (light in scene.lights) {
@@ -26,22 +25,19 @@ class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene) {
         return TraceResult(color)
     }
 
-    private fun findClosestIntersection(ray: Ray, objects: List<Traceable>): Intersection? {
-        val closest = objects.map { it.intersect(ray) }
+    private fun findClosestIntersection(ray: Ray): Intersection? {
+        return scene.objects.map { it.intersect(ray) }
                 .filterNotNull()
-                .sortedBy { it.distanceFromCamera }
-                .firstOrNull() ?: return null
-
-        val intersectionPoint = ray.startPoint + ray.direction * closest.distanceFromCamera
-        return Intersection(closest.traceable, intersectionPoint, closest.traceable.normalAt(intersectionPoint))
+                .sortedBy { it.distance }
+                .firstOrNull()
     }
 
     private fun calculateColor(intersection: Intersection, light: LightSource): Color {
         val rayToLight = createRayToLight(intersection, light)
-        var cosTheta = rayToLight.direction dot intersection.normal
+        var cosTheta = rayToLight.direction dot intersection.traceable.normalAt(intersection.point)
         if (cosTheta < 0) cosTheta = 0.0
-        val objectColor = Color.WHITE // todo get from object material
-        return objectColor * cosTheta * light.intensity
+        val color = Color.WHITE * cosTheta * light.intensity // todo get color from object material
+        return addShadow(rayToLight, color, intersection)
     }
 
     private fun createRayToLight(intersection: Intersection, light: LightSource): Ray {
@@ -49,6 +45,13 @@ class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene) {
         return Ray(rayToLightStartPoint, (light.position - rayToLightStartPoint).normalize())
     }
 
-}
+    private fun addShadow(rayToLight: Ray, color: Color, intersection: Intersection): Color {
+        var result = color
+        scene.objects
+                .filter { it != intersection.traceable }
+                .mapNotNull { it.intersect(rayToLight) }
+                .forEach { result *= 0.2 }
+        return result
+    }
 
-data class Intersection(val traceable: Traceable, val point: Vector3, val normal: Vector3)
+}
