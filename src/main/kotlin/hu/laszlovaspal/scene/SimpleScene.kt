@@ -14,7 +14,13 @@ class SimpleScene : Scene {
             up = Vector3(0.0, 1.0, 0.0)
     )
 
-    override val objects: List<Traceable> = listOf(Sphere(Vector3(0.0, 0.0, 100.0), 10.0), Sphere(Vector3(20.0, 0.0, 150.0), 10.0))
+    override val objects: List<Traceable> = listOf(
+            Sphere(position = Vector3(0.0, 0.0, 100.0), radius = 10.0),
+            Sphere(position = Vector3(20.0, 0.0, 150.0), radius = 10.0)
+    )
 
-    override val lights: List<LightSource> = listOf(LightSource(Vector3(-100.0, 100.0, 20.0)), LightSource(Vector3(1000.0, 1000.0, -20.0)))
+    override val lights: List<LightSource> = listOf(
+            LightSource(position = Vector3(-100.0, 100.0, 20.0)),
+            LightSource(position = Vector3(1000.0, 1000.0, -20.0), intensity = 0.3)
+    )
 }

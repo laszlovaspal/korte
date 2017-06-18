@@ -19,4 +19,9 @@ class Ray(val startPoint: Vector3, direction: Vector3) {
     val direction: Vector3 = direction.normalize()
 }
 
-data class LightSource(val position: Vector3)
+data class LightSource(val position: Vector3, var intensity: Double = 1.0) {
+    init {
+        if (intensity < 0.0) intensity = 0.0
+        if (intensity > 1.0) intensity = 1.0
+    }
+}
