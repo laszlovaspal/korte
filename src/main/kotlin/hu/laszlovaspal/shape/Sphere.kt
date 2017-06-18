@@ -14,15 +14,13 @@ class Sphere(val position: Vector3, val radius: Double) : Traceable {
         } else if (discriminant == 0.0) {
             val distance = -(ray.direction dot tmp)
             if (distance < 0) return null
-            val intersectionPoint = ray.startPoint + ray.direction * distance
-            return Intersection(this, distance, intersectionPoint, normalAt(intersectionPoint))
+            return Intersection(this, ray, distance)
         } else {
             val a = -(ray.direction dot tmp) + Math.sqrt(discriminant)
             val b = -(ray.direction dot tmp) - Math.sqrt(discriminant)
             val distance = minOf(a, b)
             if (distance < 0) return null
-            val intersectionPoint = ray.startPoint + ray.direction * distance
-            return Intersection(this, distance, intersectionPoint, normalAt(intersectionPoint))
+            return Intersection(this, ray, distance)
         }
     }
 

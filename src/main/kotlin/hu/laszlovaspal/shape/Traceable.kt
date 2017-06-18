@@ -8,5 +8,7 @@ interface Traceable {
     fun normalAt(point: Vector3): Vector3
 }
 
-// todo lazy point, lazy normal
-data class Intersection(val traceable: Traceable, val distance: Double, val point: Vector3, val normal: Vector3)
+class Intersection(val traceable: Traceable, val ray: Ray, val distance: Double) {
+    val point: Vector3 by lazy { ray.startPoint + ray.direction * distance }
+    val normal: Vector3 by lazy { traceable.normalAt(point) }
+}

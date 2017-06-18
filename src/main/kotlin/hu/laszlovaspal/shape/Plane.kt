@@ -10,8 +10,7 @@ class Plane(val position: Vector3, val direction: Vector3) : Traceable {
             return null
         }
 
-        val intersectionPoint = ray.startPoint + ray.direction * distance
-        return Intersection(this, distance, intersectionPoint, normalAt(intersectionPoint))
+        return Intersection(this, ray, distance)
     }
 
     override fun normalAt(point: Vector3) = direction
