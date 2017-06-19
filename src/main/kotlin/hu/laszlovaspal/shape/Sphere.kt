@@ -2,8 +2,9 @@ package hu.laszlovaspal.shape
 
 import hu.laszlovaspal.math.Vector3
 import hu.laszlovaspal.renderer.tracer.Ray
+import javafx.scene.paint.Color
 
-class Sphere(val position: Vector3, val radius: Double) : Traceable {
+class Sphere(val position: Vector3, val radius: Double, override val material: Material = Material(Color.WHITE)) : Traceable {
 
     override fun intersect(ray: Ray): Intersection? { // todo clean up
         val tmp = ray.startPoint - position

@@ -36,7 +36,7 @@ class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene) {
         val rayToLight = createRayToLight(intersection, light)
         var cosTheta = rayToLight.direction dot intersection.traceable.normalAt(intersection.point)
         if (cosTheta < 0) cosTheta = 0.0
-        val color = Color.WHITE * cosTheta * light.intensity // todo get color from object material
+        val color = intersection.traceable.material.color * cosTheta * light.intensity
         return addShadow(rayToLight, color, intersection)
     }
 
