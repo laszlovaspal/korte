@@ -14,7 +14,7 @@ class SimpleSequentialRenderer(override val scene: Scene) : Renderer {
             for (y in 0..scene.camera.height) {
                 val ray = scene.camera.rayForPixel(x, y)
                 val traceResult = rayTracer.trace(ray)
-                pixelWriter.setColor(x, y, traceResult.color)
+                pixelWriter.setArgb(x, y, traceResult.color.argb)
             }
         }
         val end = System.currentTimeMillis()

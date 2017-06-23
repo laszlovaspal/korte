@@ -1,8 +1,8 @@
 package hu.laszlovaspal.shape
 
 import hu.laszlovaspal.math.Vector3
+import hu.laszlovaspal.renderer.tracer.Color
 import hu.laszlovaspal.renderer.tracer.Ray
-import javafx.scene.paint.Color
 
 interface Traceable {
     val material: Material

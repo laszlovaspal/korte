@@ -2,12 +2,12 @@ package hu.laszlovaspal.scene
 
 import hu.laszlovaspal.math.Vector3
 import hu.laszlovaspal.renderer.tracer.Camera
+import hu.laszlovaspal.renderer.tracer.Color
 import hu.laszlovaspal.renderer.tracer.LightSource
 import hu.laszlovaspal.shape.Material
 import hu.laszlovaspal.shape.Plane
 import hu.laszlovaspal.shape.Sphere
 import hu.laszlovaspal.shape.Traceable
-import javafx.scene.paint.Color
 
 class SimpleScene : Scene {
 

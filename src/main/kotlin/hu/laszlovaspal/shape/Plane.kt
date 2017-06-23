@@ -1,8 +1,8 @@
 package hu.laszlovaspal.shape
 
 import hu.laszlovaspal.math.Vector3
+import hu.laszlovaspal.renderer.tracer.Color
 import hu.laszlovaspal.renderer.tracer.Ray
-import javafx.scene.paint.Color
 
 class Plane(val position: Vector3, val direction: Vector3, override val material: Material = Material(Color.WHITE)) : Traceable {
     override fun intersect(ray: Ray): Intersection? {

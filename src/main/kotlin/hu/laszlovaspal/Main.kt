@@ -7,7 +7,6 @@ import javafx.application.Application
 import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
-import javafx.scene.paint.Color
 import javafx.stage.Stage
 
 fun main(args: Array<String>) {
@@ -25,7 +24,7 @@ class UIWindow : Application() {
 
         renderer.renderFrame(pixelWriter)
 
-        primaryStage.scene = Scene(Group(canvas), Color.GREY)
+        primaryStage.scene = Scene(Group(canvas))
         primaryStage.isResizable = false
         primaryStage.show()
     }

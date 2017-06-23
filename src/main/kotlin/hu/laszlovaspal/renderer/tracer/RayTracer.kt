@@ -2,7 +2,6 @@ package hu.laszlovaspal.renderer.tracer
 
 import hu.laszlovaspal.scene.Scene
 import hu.laszlovaspal.shape.Intersection
-import javafx.scene.paint.Color
 
 data class TraceResult(val color: Color) {
     companion object {
