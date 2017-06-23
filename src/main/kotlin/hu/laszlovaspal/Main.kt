@@ -2,6 +2,7 @@ package hu.laszlovaspal
 
 import hu.laszlovaspal.renderer.Renderer
 import hu.laszlovaspal.renderer.SimpleFrame
+import hu.laszlovaspal.renderer.SimpleParallelRenderer
 import hu.laszlovaspal.renderer.SimpleSequentialRenderer
 import hu.laszlovaspal.scene.SimpleScene
 import javafx.application.Application
@@ -18,7 +19,8 @@ fun main(args: Array<String>) {
 class UIWindow : Application() {
 
     val scene = SimpleScene()
-    val renderer: Renderer = SimpleSequentialRenderer(scene)
+//    val renderer: Renderer = SimpleSequentialRenderer(scene)
+    val renderer: Renderer = SimpleParallelRenderer(scene)
 
     override fun start(primaryStage: Stage) {
 
