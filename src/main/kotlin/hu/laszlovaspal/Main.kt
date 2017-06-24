@@ -1,6 +1,7 @@
 package hu.laszlovaspal
 
 import hu.laszlovaspal.renderer.Renderer
+import hu.laszlovaspal.renderer.SimpleCoroutineParallelRenderer
 import hu.laszlovaspal.renderer.SimpleFrame
 import hu.laszlovaspal.renderer.SimpleParallelRenderer
 import hu.laszlovaspal.renderer.SimpleSequentialRenderer
@@ -19,13 +20,16 @@ fun main(args: Array<String>) {
 class UIWindow : Application() {
 
     val scene = SimpleScene()
-//    val renderer: Renderer = SimpleSequentialRenderer(scene)
-    val renderer: Renderer = SimpleParallelRenderer(scene)
+    val sequentialRenderer: Renderer = SimpleSequentialRenderer(scene)
+    val threadingRenderer: Renderer = SimpleParallelRenderer(scene)
+    val coroutineRenderer: Renderer = SimpleCoroutineParallelRenderer(scene)
+
+    var usedRenderer: Renderer = coroutineRenderer
 
     override fun start(primaryStage: Stage) {
 
         val frame = SimpleFrame(scene.camera.width, scene.camera.height)
-        renderer.renderFrame(frame)
+        usedRenderer.renderFrame(frame)
 
         val canvas = Canvas(scene.camera.width.toDouble(), scene.camera.height.toDouble())
         val pixelWriter = canvas.graphicsContext2D.pixelWriter
