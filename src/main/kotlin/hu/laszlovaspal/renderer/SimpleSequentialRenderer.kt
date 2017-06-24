@@ -3,9 +3,9 @@ package hu.laszlovaspal.renderer
 import hu.laszlovaspal.renderer.tracer.RayTracer
 import hu.laszlovaspal.scene.Scene
 
-class SimpleSequentialRenderer(override val scene: Scene) : Renderer {
+class SimpleSequentialRenderer(override val scene: Scene, override val configuration: RenderingConfiguration) : Renderer {
 
-    private val rayTracer = RayTracer(1, scene)
+    private val rayTracer = RayTracer(1, scene, configuration)
 
     override fun renderFrame(frame: Frame) {
         val start = System.currentTimeMillis()
@@ -17,6 +17,6 @@ class SimpleSequentialRenderer(override val scene: Scene) : Renderer {
             }
         }
         val end = System.currentTimeMillis()
-        println(end - start)
+        println("sequential: " + (end - start))
     }
 }

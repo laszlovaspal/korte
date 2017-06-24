@@ -1,5 +1,6 @@
 package hu.laszlovaspal.renderer.tracer
 
+import hu.laszlovaspal.renderer.RenderingConfiguration
 import hu.laszlovaspal.scene.Scene
 import hu.laszlovaspal.shape.Intersection
 
@@ -9,7 +10,7 @@ data class TraceResult(val color: Color) {
     }
 }
 
-class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene) {
+class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene, val configuration: RenderingConfiguration) {
 
     fun trace(ray: Ray) = trace(ray, maxDepthOfRecursion)
 
@@ -36,7 +37,10 @@ class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene) {
         var cosTheta = rayToLight.direction dot intersection.traceable.normalAt(intersection.point)
         if (cosTheta < 0) cosTheta = 0.0
         val color = intersection.traceable.material.color * cosTheta * light.intensity
-        return addShadow(rayToLight, color, intersection)
+        if (configuration.shadowsVisible) {
+            return addShadow(rayToLight, color, intersection)
+        }
+        return  color
     }
 
     private fun createRayToLight(intersection: Intersection, light: LightSource): Ray {

@@ -1,17 +1,26 @@
 package hu.laszlovaspal
 
+import hu.laszlovaspal.renderer.Frame
 import hu.laszlovaspal.renderer.Renderer
+import hu.laszlovaspal.renderer.RenderingConfiguration
 import hu.laszlovaspal.renderer.SimpleCoroutineParallelRenderer
 import hu.laszlovaspal.renderer.SimpleFrame
 import hu.laszlovaspal.renderer.SimpleParallelRenderer
 import hu.laszlovaspal.renderer.SimpleSequentialRenderer
 import hu.laszlovaspal.scene.SimpleScene
 import javafx.application.Application
-import javafx.scene.Group
+import javafx.event.ActionEvent
+import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.CheckBox
+import javafx.scene.control.ComboBox
 import javafx.scene.image.PixelFormat
+import javafx.scene.image.PixelWriter
+import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
 import javafx.stage.Stage
+import javafx.util.StringConverter
 
 fun main(args: Array<String>) {
     Application.launch(UIWindow::class.java, *args)
@@ -20,25 +29,64 @@ fun main(args: Array<String>) {
 class UIWindow : Application() {
 
     val scene = SimpleScene()
-    val sequentialRenderer: Renderer = SimpleSequentialRenderer(scene)
-    val threadingRenderer: Renderer = SimpleParallelRenderer(scene)
-    val coroutineRenderer: Renderer = SimpleCoroutineParallelRenderer(scene)
 
-    var usedRenderer: Renderer = coroutineRenderer
+    val configuration: RenderingConfiguration = RenderingConfiguration(shadowsVisible = true)
+
+    val sequentialRenderer: Renderer = SimpleSequentialRenderer(scene, configuration)
+    val threadingRenderer: Renderer = SimpleParallelRenderer(scene, configuration)
+    val coroutineRenderer: Renderer = SimpleCoroutineParallelRenderer(scene, configuration)
+
+    var currentRenderer: Renderer = sequentialRenderer
 
     override fun start(primaryStage: Stage) {
 
         val frame = SimpleFrame(scene.camera.width, scene.camera.height)
-        usedRenderer.renderFrame(frame)
-
         val canvas = Canvas(scene.camera.width.toDouble(), scene.camera.height.toDouble())
-        val pixelWriter = canvas.graphicsContext2D.pixelWriter
-        pixelWriter.setPixels(0, 0, frame.width, frame.height,
-                PixelFormat.getIntArgbInstance(), frame.pixels, 0, frame.width)
+        renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter)
 
-        primaryStage.scene = Scene(Group(canvas))
+        val shadowSelector = createShadowSelectorCheckbox()
+        shadowSelector.addEventHandler(ActionEvent.ACTION) {
+            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter)
+        }
+
+        val rendererSelector = createRendererSelectorCombobox()
+        rendererSelector.addEventHandler(ActionEvent.ACTION) {
+            currentRenderer = rendererSelector.value
+            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter)
+        }
+
+        val controls = VBox(rendererSelector, shadowSelector).apply {
+            padding = Insets(2.0)
+            spacing = 2.0
+        }
+
+        primaryStage.scene = Scene(HBox(canvas, controls))
         primaryStage.isResizable = false
         primaryStage.show()
+    }
+
+    private fun createShadowSelectorCheckbox(): CheckBox {
+        return CheckBox("Shadows").apply {
+            isSelected = configuration.shadowsVisible
+            addEventHandler(ActionEvent.ACTION) { configuration.shadowsVisible = !configuration.shadowsVisible }
+        }
+    }
+
+    private fun createRendererSelectorCombobox(): ComboBox<Renderer> {
+        return ComboBox<Renderer>().apply {
+            converter = object : StringConverter<Renderer>() {
+                override fun toString(renderer: Renderer) = renderer.javaClass.simpleName
+                override fun fromString(string: String?) = TODO("not implemented")
+            }
+            items.addAll(sequentialRenderer, threadingRenderer, coroutineRenderer)
+            value = currentRenderer
+        }
+    }
+
+    private fun renderFrameToCanvas(renderer: Renderer, frame: Frame, pixelWriter: PixelWriter) {
+        renderer.renderFrame(frame)
+        pixelWriter.setPixels(0, 0, frame.width, frame.height,
+                PixelFormat.getIntArgbInstance(), frame.pixels, 0, frame.width)
     }
 
 }

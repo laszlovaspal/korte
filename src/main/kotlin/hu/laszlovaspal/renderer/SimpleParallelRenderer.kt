@@ -5,9 +5,9 @@ import hu.laszlovaspal.scene.Scene
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-class SimpleParallelRenderer(override val scene: Scene) : Renderer {
+class SimpleParallelRenderer(override val scene: Scene, override val configuration: RenderingConfiguration) : Renderer {
 
-    private val rayTracer = RayTracer(1, scene)
+    private val rayTracer = RayTracer(1, scene, configuration)
 
     private val executorService = Executors.newFixedThreadPool(8)
 
@@ -27,9 +27,8 @@ class SimpleParallelRenderer(override val scene: Scene) : Renderer {
             }
         }
         executorService.invokeAll(tasks)
-        executorService.shutdown()
 
         val end = System.currentTimeMillis()
-        println(end - start)
+        println("parallel: " + (end - start))
     }
 }

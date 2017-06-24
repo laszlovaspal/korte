@@ -7,9 +7,9 @@ import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 
-class SimpleCoroutineParallelRenderer(override val scene: Scene) : Renderer {
+class SimpleCoroutineParallelRenderer(override val scene: Scene, override val configuration: RenderingConfiguration) : Renderer {
 
-    private val rayTracer = RayTracer(1, scene)
+    private val rayTracer = RayTracer(1, scene, configuration)
 
     override fun renderFrame(frame: Frame) = runBlocking {
         val start = System.currentTimeMillis()
@@ -29,6 +29,6 @@ class SimpleCoroutineParallelRenderer(override val scene: Scene) : Renderer {
         tasks.forEach { it.join() }
 
         val end = System.currentTimeMillis()
-        println(end - start)
+        println("coroutine: " + (end - start))
     }
 }
