@@ -9,6 +9,7 @@ import hu.laszlovaspal.renderer.SimpleParallelRenderer
 import hu.laszlovaspal.renderer.SimpleSequentialRenderer
 import hu.laszlovaspal.scene.SimpleScene
 import javafx.application.Application
+import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.geometry.Insets
 import javafx.scene.Scene
@@ -23,6 +24,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.StringConverter
+import kotlin.concurrent.thread
 
 fun main(args: Array<String>) {
     Application.launch(UIWindow::class.java, *args)
@@ -91,10 +93,20 @@ class UIWindow : Application() {
     }
 
     private fun renderFrameToCanvas(renderer: Renderer, frame: Frame, pixelWriter: PixelWriter, informationLabel: Label? = null) {
-        val milliseconds = renderer.renderFrame(frame)
-        pixelWriter.setPixels(0, 0, frame.width, frame.height,
+        informationLabel?.text = "Rendering..."
+        thread {
+            val milliseconds = renderer.renderFrame(frame)
+
+            Platform.runLater {
+                pixelWriter.setPixelsFromFrame(frame)
+                informationLabel?.text = "${renderer.javaClass.simpleName}: ${milliseconds}ms"
+            }
+        }
+    }
+
+    private fun PixelWriter.setPixelsFromFrame(frame: Frame) {
+        this.setPixels(0, 0, frame.width, frame.height,
                 PixelFormat.getIntArgbInstance(), frame.pixels, 0, frame.width)
-        informationLabel?.text = "${renderer.javaClass.simpleName}: ${milliseconds}ms"
     }
 
 }
