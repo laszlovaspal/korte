@@ -11,24 +11,26 @@ class SimpleCoroutineParallelRenderer(override val scene: Scene, override val co
 
     private val rayTracer = RayTracer(1, scene, configuration)
 
-    override fun renderFrame(frame: Frame) = runBlocking {
+    override fun renderFrame(frame: Frame): Long {
         val start = System.currentTimeMillis()
 
-        val tasks = mutableListOf<Job>()
-        for (x in 0..scene.camera.width - 1) {
-            for (y in 0..scene.camera.height - 1) {
-                tasks.add(
-                        launch(CommonPool) {
-                            val ray = scene.camera.rayForPixel(x, y)
-                            val traceResult = rayTracer.trace(ray)
-                            frame.setArgb(x, y, traceResult.color.argb)
-                        }
-                )
+        runBlocking {
+            val tasks = mutableListOf<Job>()
+            for (x in 0..scene.camera.width - 1) {
+                for (y in 0..scene.camera.height - 1) {
+                    tasks.add(
+                            launch(CommonPool) {
+                                val ray = scene.camera.rayForPixel(x, y)
+                                val traceResult = rayTracer.trace(ray)
+                                frame.setArgb(x, y, traceResult.color.argb)
+                            }
+                    )
+                }
             }
+            tasks.forEach { it.join() }
         }
-        tasks.forEach { it.join() }
 
         val end = System.currentTimeMillis()
-        println("coroutine: " + (end - start))
+        return end - start
     }
 }

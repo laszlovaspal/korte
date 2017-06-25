@@ -11,7 +11,7 @@ class SimpleParallelRenderer(override val scene: Scene, override val configurati
 
     private val executorService = Executors.newFixedThreadPool(8)
 
-    override fun renderFrame(frame: Frame) {
+    override fun renderFrame(frame: Frame): Long {
         val start = System.currentTimeMillis()
 
         val tasks = mutableListOf<Callable<Unit>>()
@@ -29,6 +29,6 @@ class SimpleParallelRenderer(override val scene: Scene, override val configurati
         executorService.invokeAll(tasks)
 
         val end = System.currentTimeMillis()
-        println("parallel: " + (end - start))
+        return end - start
     }
 }

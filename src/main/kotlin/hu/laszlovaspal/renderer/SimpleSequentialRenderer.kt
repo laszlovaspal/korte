@@ -7,7 +7,7 @@ class SimpleSequentialRenderer(override val scene: Scene, override val configura
 
     private val rayTracer = RayTracer(1, scene, configuration)
 
-    override fun renderFrame(frame: Frame) {
+    override fun renderFrame(frame: Frame): Long {
         val start = System.currentTimeMillis()
         for (x in 0..scene.camera.width - 1) {
             for (y in 0..scene.camera.height - 1) {
@@ -17,6 +17,6 @@ class SimpleSequentialRenderer(override val scene: Scene, override val configura
             }
         }
         val end = System.currentTimeMillis()
-        println("sequential: " + (end - start))
+        return end - start
     }
 }

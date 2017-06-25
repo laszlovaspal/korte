@@ -15,8 +15,10 @@ import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Label
 import javafx.scene.image.PixelFormat
 import javafx.scene.image.PixelWriter
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
@@ -42,25 +44,30 @@ class UIWindow : Application() {
 
         val frame = SimpleFrame(scene.camera.width, scene.camera.height)
         val canvas = Canvas(scene.camera.width.toDouble(), scene.camera.height.toDouble())
-        renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter)
-
         val shadowSelector = createShadowSelectorCheckbox()
-        shadowSelector.addEventHandler(ActionEvent.ACTION) {
-            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter)
+        val rendererSelector = createRendererSelectorCombobox()
+        val informationLabel = Label("Label")
+        val settings = VBox(rendererSelector, shadowSelector).apply {
+            spacing = 4.0
+        }
+        val controlPanel = BorderPane().apply {
+            padding = Insets(4.0)
+            top = settings
+            bottom = informationLabel
         }
 
-        val rendererSelector = createRendererSelectorCombobox()
+        shadowSelector.addEventHandler(ActionEvent.ACTION) {
+            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter, informationLabel)
+        }
+
         rendererSelector.addEventHandler(ActionEvent.ACTION) {
             currentRenderer = rendererSelector.value
-            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter)
+            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter, informationLabel)
         }
 
-        val controls = VBox(rendererSelector, shadowSelector).apply {
-            padding = Insets(2.0)
-            spacing = 2.0
-        }
+        renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter, informationLabel)
 
-        primaryStage.scene = Scene(HBox(canvas, controls))
+        primaryStage.scene = Scene(HBox(canvas, controlPanel))
         primaryStage.isResizable = false
         primaryStage.show()
     }
@@ -83,10 +90,11 @@ class UIWindow : Application() {
         }
     }
 
-    private fun renderFrameToCanvas(renderer: Renderer, frame: Frame, pixelWriter: PixelWriter) {
-        renderer.renderFrame(frame)
+    private fun renderFrameToCanvas(renderer: Renderer, frame: Frame, pixelWriter: PixelWriter, informationLabel: Label? = null) {
+        val milliseconds = renderer.renderFrame(frame)
         pixelWriter.setPixels(0, 0, frame.width, frame.height,
                 PixelFormat.getIntArgbInstance(), frame.pixels, 0, frame.width)
+        informationLabel?.text = "${renderer.javaClass.simpleName}: ${milliseconds}ms"
     }
 
 }

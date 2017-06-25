@@ -6,7 +6,7 @@ import hu.laszlovaspal.scene.Scene
 interface Renderer {
     val configuration: RenderingConfiguration
     val scene: Scene
-    fun renderFrame(frame: Frame)
+    fun renderFrame(frame: Frame): Long
 }
 
 data class RenderingConfiguration(var shadowsVisible: Boolean = false)
