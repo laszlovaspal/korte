@@ -1,7 +1,7 @@
-package hu.laszlovaspal.renderer
+package hu.laszlovaspal.krtengine.renderer
 
-import hu.laszlovaspal.renderer.tracer.RayTracer
-import hu.laszlovaspal.scene.Scene
+import hu.laszlovaspal.krtengine.renderer.tracer.RayTracer
+import hu.laszlovaspal.krtengine.scene.Scene
 
 class SimpleSequentialRenderer(override val scene: Scene, override val configuration: RenderingConfiguration) : Renderer {
 

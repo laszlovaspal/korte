@@ -1,8 +1,9 @@
-package hu.laszlovaspal.renderer.tracer
+package hu.laszlovaspal.krtengine.renderer.tracer
 
-import hu.laszlovaspal.renderer.RenderingConfiguration
-import hu.laszlovaspal.scene.Scene
-import hu.laszlovaspal.shape.Intersection
+import hu.laszlovaspal.color.Color
+import hu.laszlovaspal.krtengine.renderer.RenderingConfiguration
+import hu.laszlovaspal.krtengine.scene.Scene
+import hu.laszlovaspal.krtengine.shape.Intersection
 
 data class TraceResult(val color: Color) {
     companion object {

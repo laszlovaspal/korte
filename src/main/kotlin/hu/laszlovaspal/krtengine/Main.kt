@@ -1,13 +1,13 @@
-package hu.laszlovaspal
+package hu.laszlovaspal.krtengine
 
-import hu.laszlovaspal.renderer.Frame
-import hu.laszlovaspal.renderer.Renderer
-import hu.laszlovaspal.renderer.RenderingConfiguration
-import hu.laszlovaspal.renderer.SimpleCoroutineParallelRenderer
-import hu.laszlovaspal.renderer.SimpleFrame
-import hu.laszlovaspal.renderer.SimpleParallelRenderer
-import hu.laszlovaspal.renderer.SimpleSequentialRenderer
-import hu.laszlovaspal.scene.SimpleScene
+import hu.laszlovaspal.krtengine.renderer.Frame
+import hu.laszlovaspal.krtengine.renderer.Renderer
+import hu.laszlovaspal.krtengine.renderer.RenderingConfiguration
+import hu.laszlovaspal.krtengine.renderer.SimpleCoroutineParallelRenderer
+import hu.laszlovaspal.krtengine.renderer.SimpleFrame
+import hu.laszlovaspal.krtengine.renderer.SimpleParallelRenderer
+import hu.laszlovaspal.krtengine.renderer.SimpleSequentialRenderer
+import hu.laszlovaspal.krtengine.scene.SimpleScene
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.event.ActionEvent

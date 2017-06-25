@@ -1,4 +1,4 @@
-package hu.laszlovaspal.renderer.tracer
+package hu.laszlovaspal.krtengine.renderer.tracer
 
 import hu.laszlovaspal.math.Vector3
 

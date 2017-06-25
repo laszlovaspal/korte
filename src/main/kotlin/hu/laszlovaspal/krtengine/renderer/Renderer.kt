@@ -1,7 +1,7 @@
-package hu.laszlovaspal.renderer
+package hu.laszlovaspal.krtengine.renderer
 
-import hu.laszlovaspal.renderer.tracer.Color
-import hu.laszlovaspal.scene.Scene
+import hu.laszlovaspal.color.Color
+import hu.laszlovaspal.krtengine.scene.Scene
 
 interface Renderer {
     val configuration: RenderingConfiguration

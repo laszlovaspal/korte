@@ -1,7 +1,7 @@
-package hu.laszlovaspal.renderer
+package hu.laszlovaspal.krtengine.renderer
 
-import hu.laszlovaspal.renderer.tracer.RayTracer
-import hu.laszlovaspal.scene.Scene
+import hu.laszlovaspal.krtengine.renderer.tracer.RayTracer
+import hu.laszlovaspal.krtengine.scene.Scene
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
