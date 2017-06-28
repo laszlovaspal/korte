@@ -2,7 +2,7 @@ package hu.laszlovaspal.krtengine.renderer.tracer
 
 import hu.laszlovaspal.math.Vector3
 
-class Camera(val position: Vector3, direction: Vector3, up: Vector3) {
+class Camera(var position: Vector3, direction: Vector3, up: Vector3) {
     val width = 800
     val height = 500
 
