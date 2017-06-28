@@ -26,7 +26,7 @@ class SimpleParallelRenderer(override val scene: Scene, override val configurati
     private fun getRenderTaskForThread(threadId: Int, frame: Frame) = Callable {
         val segment: Int = scene.camera.width / numberOfThreads
         val start = threadId * segment
-        for (x in start..(start + segment)) {
+        for (x in start..(start + segment - 1)) {
             for (y in 0..scene.camera.height - 1) {
                 val ray = scene.camera.rayForPixel(x, y)
                 val traceResult = rayTracer.trace(ray)
