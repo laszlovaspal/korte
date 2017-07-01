@@ -36,7 +36,7 @@ class UIWindow : Application() {
     val threadingRenderer: Renderer = SimpleParallelRenderer(scene, configuration)
     val coroutineRenderer: Renderer = SimpleCoroutineParallelRenderer(scene, configuration)
 
-    var currentRenderer: Renderer = sequentialRenderer
+    var currentRenderer: Renderer = threadingRenderer
 
     override fun start(primaryStage: Stage) {
 
@@ -44,7 +44,7 @@ class UIWindow : Application() {
         val canvas = Canvas(scene.camera.width.toDouble(), scene.camera.height.toDouble())
         val shadowSelector = createShadowSelectorCheckbox()
         val rendererSelector = createRendererSelectorCombobox()
-        val informationLabel = Label("Label")
+        val informationLabel = Label("Rendering...")
         val settings = VBox(rendererSelector, shadowSelector).apply {
             spacing = 4.0
         }
@@ -54,20 +54,24 @@ class UIWindow : Application() {
             bottom = informationLabel
         }
 
-        shadowSelector.addEventHandler(ActionEvent.ACTION) {
-            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter, informationLabel)
-        }
-
-        rendererSelector.addEventHandler(ActionEvent.ACTION) {
-            currentRenderer = rendererSelector.value
-            renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter, informationLabel)
-        }
-
-        renderFrameToCanvas(currentRenderer, frame, canvas.graphicsContext2D.pixelWriter, informationLabel)
-
+        val controller = KeyboardController(scene.camera)
         primaryStage.scene = Scene(HBox(canvas, controlPanel))
+        primaryStage.scene.onKeyPressed = controller.keyPressedHandler
         primaryStage.isResizable = false
         primaryStage.show()
+
+        val fpsMeasurer = FpsMeasurer(informationLabel).apply { start() }
+
+        thread(isDaemon = true) {
+            while (true) {
+                currentRenderer.renderFrame(frame)
+                fpsMeasurer.renderedFrames++
+                Platform.runLater {
+                    canvas.graphicsContext2D.pixelWriter.setPixelsFromFrame(frame)
+                }
+            }
+        }
+
     }
 
     private fun createShadowSelectorCheckbox(): CheckBox {
@@ -85,18 +89,7 @@ class UIWindow : Application() {
             }
             items.addAll(sequentialRenderer, threadingRenderer, coroutineRenderer)
             value = currentRenderer
-        }
-    }
-
-    private fun renderFrameToCanvas(renderer: Renderer, frame: Frame, pixelWriter: PixelWriter, informationLabel: Label? = null) {
-        informationLabel?.text = "Rendering..."
-        thread {
-            val milliseconds = renderer.renderFrame(frame)
-
-            Platform.runLater {
-                pixelWriter.setPixelsFromFrame(frame)
-                informationLabel?.text = "${renderer.javaClass.simpleName}: ${milliseconds}ms"
-            }
+            addEventHandler(ActionEvent.ACTION) { currentRenderer = value }
         }
     }
 
