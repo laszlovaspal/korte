@@ -2,11 +2,13 @@ package hu.laszlovaspal.krtengine.renderer
 
 import hu.laszlovaspal.color.Color
 import hu.laszlovaspal.krtengine.scene.Scene
+import java.io.Closeable
 
-interface Renderer {
+interface Renderer : Closeable {
     val configuration: RenderingConfiguration
     val scene: Scene
     fun renderFrame(frame: Frame): Long
+    override fun close() {}
 }
 
 data class RenderingConfiguration(var shadowsVisible: Boolean = false)

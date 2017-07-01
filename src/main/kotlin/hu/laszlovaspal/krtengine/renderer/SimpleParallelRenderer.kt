@@ -23,6 +23,10 @@ class SimpleParallelRenderer(override val scene: Scene, override val configurati
         return end - start
     }
 
+    override fun close() {
+        executorService.shutdown()
+    }
+
     private fun getRenderTaskForThread(threadId: Int, frame: Frame) = Callable {
         val segment: Int = scene.camera.width / numberOfThreads
         val start = threadId * segment

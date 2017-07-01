@@ -32,11 +32,12 @@ class UIWindow : Application() {
 
     val configuration: RenderingConfiguration = RenderingConfiguration(shadowsVisible = true)
 
-    val sequentialRenderer: Renderer = SimpleSequentialRenderer(scene, configuration)
-    val threadingRenderer: Renderer = SimpleParallelRenderer(scene, configuration)
-    val coroutineRenderer: Renderer = SimpleCoroutineParallelRenderer(scene, configuration)
-
-    var currentRenderer: Renderer = threadingRenderer
+    val renderers = listOf(
+            SimpleParallelRenderer(scene, configuration),
+            SimpleSequentialRenderer(scene, configuration),
+            SimpleCoroutineParallelRenderer(scene, configuration)
+    )
+    var selectedRenderer = renderers.first()
 
     override fun start(primaryStage: Stage) {
 
@@ -64,14 +65,17 @@ class UIWindow : Application() {
 
         thread(isDaemon = true) {
             while (true) {
-                currentRenderer.renderFrame(frame)
+                selectedRenderer.renderFrame(frame)
                 fpsMeasurer.renderedFrames++
                 Platform.runLater {
                     canvas.graphicsContext2D.pixelWriter.setPixelsFromFrame(frame)
                 }
             }
         }
+    }
 
+    override fun stop() {
+        renderers.map { it.close() }
     }
 
     private fun createShadowSelectorCheckbox(): CheckBox {
@@ -87,9 +91,9 @@ class UIWindow : Application() {
                 override fun toString(renderer: Renderer) = renderer.javaClass.simpleName
                 override fun fromString(string: String?) = TODO("not implemented")
             }
-            items.addAll(sequentialRenderer, threadingRenderer, coroutineRenderer)
-            value = currentRenderer
-            addEventHandler(ActionEvent.ACTION) { currentRenderer = value }
+            items.addAll(renderers)
+            value = selectedRenderer
+            addEventHandler(ActionEvent.ACTION) { selectedRenderer = value }
         }
     }
 
