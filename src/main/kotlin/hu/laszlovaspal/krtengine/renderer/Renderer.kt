@@ -7,7 +7,7 @@ import java.io.Closeable
 interface Renderer : Closeable {
     val configuration: RenderingConfiguration
     val scene: Scene
-    fun renderFrame(frame: Frame): Long
+    fun renderFrame(frame: Frame)
     override fun close() {}
 }
 

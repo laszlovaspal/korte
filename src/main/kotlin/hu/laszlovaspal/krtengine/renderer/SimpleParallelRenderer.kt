@@ -13,14 +13,9 @@ class SimpleParallelRenderer(override val scene: Scene, override val configurati
     private val numberOfThreads = 4
     private val executorService = Executors.newFixedThreadPool(numberOfThreads)
 
-    override fun renderFrame(frame: Frame): Long {
-        val start = System.currentTimeMillis()
-
+    override fun renderFrame(frame: Frame) {
         val tasks = (0..numberOfThreads - 1).map { getRenderTaskForThread(it, frame) }
         executorService.invokeAll(tasks)
-
-        val end = System.currentTimeMillis()
-        return end - start
     }
 
     override fun close() {
