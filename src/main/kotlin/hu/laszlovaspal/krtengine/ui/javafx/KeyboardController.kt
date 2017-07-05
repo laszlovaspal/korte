@@ -1,6 +1,6 @@
 package hu.laszlovaspal.krtengine.ui.javafx
 
-import hu.laszlovaspal.krtengine.renderer.tracer.Camera
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Camera
 import hu.laszlovaspal.math.Vector3
 import javafx.event.EventHandler
 import javafx.scene.input.KeyCode

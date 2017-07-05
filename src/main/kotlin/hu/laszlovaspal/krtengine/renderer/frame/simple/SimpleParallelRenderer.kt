@@ -1,7 +1,10 @@
-package hu.laszlovaspal.krtengine.renderer
+package hu.laszlovaspal.krtengine.renderer.frame.simple
 
 import hu.laszlovaspal.color.Color
-import hu.laszlovaspal.krtengine.renderer.tracer.RayTracer
+import hu.laszlovaspal.krtengine.renderer.Frame
+import hu.laszlovaspal.krtengine.renderer.Renderer
+import hu.laszlovaspal.krtengine.renderer.RenderingConfiguration
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.RayTracer
 import hu.laszlovaspal.krtengine.scene.Scene
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -13,8 +16,12 @@ class SimpleParallelRenderer(override val scene: Scene, override val configurati
     private val numberOfThreads = 4
     private val executorService = Executors.newFixedThreadPool(numberOfThreads)
 
+    val tasks = mutableListOf<Callable<Unit>>()
+
     override fun renderFrame(frame: Frame) {
-        val tasks = (0..numberOfThreads - 1).map { getRenderTaskForThread(it, frame) }
+        if (tasks.isEmpty()) {
+            tasks.addAll((0..numberOfThreads - 1).map { getRenderTaskForThread(it, frame) })
+        }
         executorService.invokeAll(tasks)
     }
 

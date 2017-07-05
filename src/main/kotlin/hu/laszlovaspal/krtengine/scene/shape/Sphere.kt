@@ -1,8 +1,11 @@
-package hu.laszlovaspal.krtengine.shape
+package hu.laszlovaspal.krtengine.scene.shape
 
-import hu.laszlovaspal.math.Vector3
 import hu.laszlovaspal.color.Color
-import hu.laszlovaspal.krtengine.renderer.tracer.Ray
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Intersection
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Material
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Ray
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Traceable
+import hu.laszlovaspal.math.Vector3
 
 class Sphere(val position: Vector3, val radius: Double, override val material: Material = Material(Color.WHITE)) : Traceable {
 

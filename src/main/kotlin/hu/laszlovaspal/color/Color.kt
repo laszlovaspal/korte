@@ -1,6 +1,6 @@
 package hu.laszlovaspal.color
 
-class Color(val red: Double, val green: Double, val blue: Double, val alpha: Double = 1.0) {
+data class Color(val red: Double, val green: Double, val blue: Double, val alpha: Double = 1.0) {
 
     val argb: Int
 
@@ -19,13 +19,13 @@ class Color(val red: Double, val green: Double, val blue: Double, val alpha: Dou
     }
 
     operator fun plus(colorToAdd: Color): Color {
-        var red = this.red + colorToAdd.red
+        var red = this.red + colorToAdd.red * colorToAdd.alpha
         if (red > 1) red = 1.0
 
-        var green = this.green + colorToAdd.green
+        var green = this.green + colorToAdd.green * colorToAdd.alpha
         if (green > 1) green = 1.0
 
-        var blue = this.blue + colorToAdd.blue
+        var blue = this.blue + colorToAdd.blue * colorToAdd.alpha
         if (blue > 1) blue = 1.0
 
         return Color(red, green, blue, this.alpha)

@@ -3,13 +3,14 @@ package hu.laszlovaspal.krtengine.ui.javafx
 import hu.laszlovaspal.krtengine.renderer.Frame
 import hu.laszlovaspal.krtengine.renderer.Renderer
 import hu.laszlovaspal.krtengine.renderer.RenderingConfiguration
-import hu.laszlovaspal.krtengine.renderer.SimpleCoroutineParallelRenderer
 import hu.laszlovaspal.krtengine.renderer.SimpleFrame
-import hu.laszlovaspal.krtengine.renderer.SimpleParallelRenderer
-import hu.laszlovaspal.krtengine.renderer.SimpleSequentialRenderer
+import hu.laszlovaspal.krtengine.renderer.frame.framesplitting.FrameSplittingSequentialRenderer
+import hu.laszlovaspal.krtengine.renderer.frame.simple.SimpleCoroutineParallelRenderer
+import hu.laszlovaspal.krtengine.renderer.frame.simple.SimpleParallelRenderer
+import hu.laszlovaspal.krtengine.renderer.frame.simple.SimpleSequentialRenderer
 import hu.laszlovaspal.krtengine.scene.SimpleScene
+import javafx.animation.AnimationTimer
 import javafx.application.Application
-import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.geometry.Insets
 import javafx.scene.Scene
@@ -17,6 +18,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
+import javafx.scene.control.Slider
 import javafx.scene.image.PixelFormat
 import javafx.scene.image.PixelWriter
 import javafx.scene.layout.BorderPane
@@ -24,7 +26,6 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.StringConverter
-import kotlin.concurrent.thread
 
 class UIWindow : Application() {
 
@@ -33,20 +34,23 @@ class UIWindow : Application() {
     val configuration: RenderingConfiguration = RenderingConfiguration(shadowsVisible = true)
 
     val renderers = listOf(
-            SimpleParallelRenderer(scene, configuration),
             SimpleSequentialRenderer(scene, configuration),
-            SimpleCoroutineParallelRenderer(scene, configuration)
+            SimpleCoroutineParallelRenderer(scene, configuration),
+            SimpleParallelRenderer(scene, configuration),
+            FrameSplittingSequentialRenderer(scene, configuration)
     )
-    var selectedRenderer = renderers.first()
+    var selectedRenderer = renderers.last()
 
     override fun start(primaryStage: Stage) {
 
         val frame = SimpleFrame(scene.camera.width, scene.camera.height)
         val canvas = Canvas(scene.camera.width.toDouble(), scene.camera.height.toDouble())
         val shadowSelector = createShadowSelectorCheckbox()
+        val debugCheckbox = createDebugCheckbox()
         val rendererSelector = createRendererSelectorCombobox()
         val informationLabel = Label("Rendering...")
-        val settings = VBox(rendererSelector, shadowSelector).apply {
+        val blockSizeSlider = createBlockSizeSlider()
+        val settings = VBox(rendererSelector, shadowSelector, debugCheckbox, blockSizeSlider).apply {
             spacing = 4.0
         }
         val controlPanel = BorderPane().apply {
@@ -63,15 +67,14 @@ class UIWindow : Application() {
 
         val fpsMeasurer = FpsMeasurer(informationLabel).apply { start() }
 
-        thread(isDaemon = true) {
-            while (true) {
+        object : AnimationTimer() {
+            override fun handle(now: Long) {
                 selectedRenderer.renderFrame(frame)
                 fpsMeasurer.renderedFrames++
-                Platform.runLater {
-                    canvas.graphicsContext2D.pixelWriter.setPixelsFromFrame(frame)
-                }
+                canvas.graphicsContext2D.pixelWriter.setPixelsFromFrame(frame)
             }
-        }
+        }.start()
+
     }
 
     override fun stop() {
@@ -83,6 +86,31 @@ class UIWindow : Application() {
             isSelected = configuration.shadowsVisible
             addEventHandler(ActionEvent.ACTION) { configuration.shadowsVisible = !configuration.shadowsVisible }
         }
+    }
+
+    private fun createDebugCheckbox(): CheckBox {
+        return CheckBox("Debug").apply {
+            isSelected = configuration.debug
+            addEventHandler(ActionEvent.ACTION) { configuration.debug = !configuration.debug }
+        }
+    }
+
+    private fun createBlockSizeSlider(): HBox {
+        val label = Label("Blocksize: ")
+        val valueLabel = Label(" 10")
+        val slider = Slider(5.0, 50.0, 10.0).apply {
+            majorTickUnit = 5.0
+            minorTickCount = 0
+            isShowTickMarks = true
+            isSnapToTicks = true
+            valueProperty().addListener { _ ->
+                if (value % majorTickUnit == 0.0) {
+                    configuration.blockSize = value.toInt()
+                    valueLabel.text = " ${configuration.blockSize}"
+                }
+            }
+        }
+        return HBox(label, slider, valueLabel)
     }
 
     private fun createRendererSelectorCombobox(): ComboBox<Renderer> {

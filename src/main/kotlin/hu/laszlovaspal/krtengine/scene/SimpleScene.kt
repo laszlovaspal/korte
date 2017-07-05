@@ -1,13 +1,13 @@
 package hu.laszlovaspal.krtengine.scene
 
-import hu.laszlovaspal.math.Vector3
-import hu.laszlovaspal.krtengine.renderer.tracer.Camera
 import hu.laszlovaspal.color.Color
-import hu.laszlovaspal.krtengine.renderer.tracer.LightSource
-import hu.laszlovaspal.krtengine.shape.Material
-import hu.laszlovaspal.krtengine.shape.Plane
-import hu.laszlovaspal.krtengine.shape.Sphere
-import hu.laszlovaspal.krtengine.shape.Traceable
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Camera
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.LightSource
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Material
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Traceable
+import hu.laszlovaspal.krtengine.scene.shape.Plane
+import hu.laszlovaspal.krtengine.scene.shape.Sphere
+import hu.laszlovaspal.math.Vector3
 
 class SimpleScene : Scene {
 

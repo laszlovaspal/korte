@@ -1,8 +1,8 @@
 package hu.laszlovaspal.krtengine.scene
 
-import hu.laszlovaspal.krtengine.renderer.tracer.Camera
-import hu.laszlovaspal.krtengine.renderer.tracer.LightSource
-import hu.laszlovaspal.krtengine.shape.Traceable
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Camera
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.LightSource
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.Traceable
 
 interface Scene {
     val camera: Camera

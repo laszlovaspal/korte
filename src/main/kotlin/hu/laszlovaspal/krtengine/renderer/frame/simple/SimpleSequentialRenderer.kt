@@ -1,6 +1,9 @@
-package hu.laszlovaspal.krtengine.renderer
+package hu.laszlovaspal.krtengine.renderer.frame.simple
 
-import hu.laszlovaspal.krtengine.renderer.tracer.RayTracer
+import hu.laszlovaspal.krtengine.renderer.Frame
+import hu.laszlovaspal.krtengine.renderer.Renderer
+import hu.laszlovaspal.krtengine.renderer.RenderingConfiguration
+import hu.laszlovaspal.krtengine.renderer.pixel.tracer.RayTracer
 import hu.laszlovaspal.krtengine.scene.Scene
 
 class SimpleSequentialRenderer(override val scene: Scene, override val configuration: RenderingConfiguration) : Renderer {

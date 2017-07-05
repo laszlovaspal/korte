@@ -1,9 +1,8 @@
-package hu.laszlovaspal.krtengine.renderer.tracer
+package hu.laszlovaspal.krtengine.renderer.pixel.tracer
 
 import hu.laszlovaspal.color.Color
 import hu.laszlovaspal.krtengine.renderer.RenderingConfiguration
 import hu.laszlovaspal.krtengine.scene.Scene
-import hu.laszlovaspal.krtengine.shape.Intersection
 
 data class TraceResult(val color: Color) {
     companion object {
@@ -41,7 +40,7 @@ class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene, val configuratio
         if (configuration.shadowsVisible) {
             return addShadow(rayToLight, color, intersection)
         }
-        return  color
+        return color
     }
 
     private fun createRayToLight(intersection: Intersection, light: LightSource): Ray {
