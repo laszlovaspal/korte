@@ -55,6 +55,14 @@ class Color {
     operator fun times(cosTheta: Double) =
             Color(this.red * cosTheta, this.green * cosTheta, this.blue * cosTheta, this.alpha)
 
+    fun difference(color: Color): Double {
+        return maxOf(
+                Math.abs(red - color.red),
+                Math.abs(green - color.green),
+                Math.abs(blue - color.blue)
+        )
+    }
+
     companion object {
         val BLACK = Color(red = 0.0, green = 0.0, blue = 0.0)
         val GRAY = Color(red = 0.5, green = 0.5, blue = 0.5)

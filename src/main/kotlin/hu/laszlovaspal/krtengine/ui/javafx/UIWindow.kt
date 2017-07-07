@@ -98,16 +98,15 @@ class UIWindow : Application() {
     private fun createBlockSizeSlider(): HBox {
         val label = Label("Blocksize: ")
         val valueLabel = Label(" 10")
-        val slider = Slider(5.0, 50.0, 10.0).apply {
-            majorTickUnit = 5.0
+        val possibleValues = listOf(2, 5, 10, 20, 25, 50)
+        val slider = Slider(0.0, (possibleValues.size - 1).toDouble(), 2.0).apply {
+            majorTickUnit = 1.0
             minorTickCount = 0
             isShowTickMarks = true
             isSnapToTicks = true
             valueProperty().addListener { _ ->
-                if (value % majorTickUnit == 0.0) {
-                    configuration.blockSize = value.toInt()
-                    valueLabel.text = " ${configuration.blockSize}"
-                }
+                configuration.blockSize = possibleValues[value.toInt()]
+                valueLabel.text = " ${configuration.blockSize}"
             }
         }
         return HBox(label, slider, valueLabel)

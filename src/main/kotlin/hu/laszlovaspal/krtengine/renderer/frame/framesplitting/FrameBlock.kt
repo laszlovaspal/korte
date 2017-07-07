@@ -16,7 +16,7 @@ class FrameBlock(private val frame: Frame,
 
     private val random = Random()
 
-    private val highlightColor = Color(1.0, 0.0, 1.0, 0.3)
+    private val highlightColor = Color(1.0, 0.0, 1.0, 0.5)
     private val withoutHighlight = SimpleFrame(size, size)
     var isHighlighted = false
 
@@ -25,9 +25,10 @@ class FrameBlock(private val frame: Frame,
         val sampleY = random.nextInt(size)
 
         val ray = scene.camera.rayForPixel(sampleX + x, sampleY + y)
-        val traceResult = rayTracer.trace(ray)
+        val sampledColorInBlock = rayTracer.trace(ray).color
+        val previousColor = Color(withoutHighlight.getArgb(sampleX, sampleY))
 
-        return traceResult.color.argb != withoutHighlight.getArgb(sampleX, sampleY)
+        return sampledColorInBlock.difference(previousColor) > 0.03
     }
 
     fun redraw() = when {
