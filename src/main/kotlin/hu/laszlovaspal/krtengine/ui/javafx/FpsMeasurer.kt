@@ -11,7 +11,7 @@ class FpsMeasurer(val informationLabel: Label) : AnimationTimer() {
 
     override fun handle(now: Long) {
         val elapsed = now - lastTimestamp
-        if (elapsed > 1.secondsToNanos()) {
+        if (elapsed > 0.5.secondsToNanos()) {
             val fps = renderedFrames / elapsed.nanosToSeconds()
             informationLabel.text = "Fps: ${String.format("%.2f", fps)}"
             lastTimestamp = now
@@ -20,6 +20,7 @@ class FpsMeasurer(val informationLabel: Label) : AnimationTimer() {
     }
 
     private fun Int.secondsToNanos() = this * 1000000000
+    private fun Double.secondsToNanos() = (this * 1000000000).toInt()
     private fun Long.nanosToSeconds() = this / 1000000000.0
 
 }
