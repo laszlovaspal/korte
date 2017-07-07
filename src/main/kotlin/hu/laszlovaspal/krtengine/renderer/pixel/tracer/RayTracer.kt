@@ -49,12 +49,9 @@ class RayTracer(val maxDepthOfRecursion: Int, val scene: Scene, val configuratio
     }
 
     private fun addShadow(rayToLight: Ray, color: Color, intersection: Intersection): Color {
-        var result = color
-        scene.objects
-                .filter { it != intersection.traceable }
-                .mapNotNull { it.intersect(rayToLight) }
-                .forEach { result *= 0.2 }
-        return result
+        if (scene.objects.any { it != intersection.traceable && it.intersect(rayToLight) != null })
+            return Color.BLACK
+        return color
     }
 
 }
