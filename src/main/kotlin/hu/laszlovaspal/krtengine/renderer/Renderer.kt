@@ -11,7 +11,7 @@ interface Renderer : Closeable {
     override fun close() {}
 }
 
-data class RenderingConfiguration(var shadowsVisible: Boolean = false,
+data class RenderingConfiguration(var shadowsVisible: Boolean = true,
                                   var debug: Boolean = false,
                                   var blockSize: Int = 10)
 
