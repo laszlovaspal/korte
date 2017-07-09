@@ -47,9 +47,9 @@ class ControlPanel(val scene: Scene, val renderers: List<Renderer>, val configur
 
     private fun createBlockSizeSlider(): HBox {
         val label = Label("Blocksize: ")
-        val valueLabel = Label(" 10")
+        val valueLabel = Label(" ${configuration.blockSize}")
         val possibleValues = listOf(2, 5, 10, 20, 25, 50)
-        val slider = Slider(0.0, (possibleValues.size - 1).toDouble(), 2.0).apply {
+        val slider = Slider(0.0, (possibleValues.size - 1).toDouble(), possibleValues.indexOf(configuration.blockSize).toDouble()).apply {
             majorTickUnit = 1.0
             minorTickCount = 0
             isShowTickMarks = true
