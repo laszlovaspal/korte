@@ -15,7 +15,7 @@ interface Vector3 {
 
     companion object {
         operator fun invoke(x: Double, y: Double, z: Double): Vector3 = Vector3Impl(x, y, z)
-
+        val ZERO: Vector3 = Vector3Impl(0.0, 0.0, 0.0)
     }
 }
 

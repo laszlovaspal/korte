@@ -9,14 +9,18 @@ import javafx.scene.input.KeyEvent
 class KeyboardController(val camera: Camera) {
 
     val keyPressedHandler = EventHandler<KeyEvent> {
-        val stepForward = Vector3(0.0, 0.0, 1.0)
-        val stepSide = Vector3(1.0, 0.0, 0.0)
+        val stepForward = Vector3(0.0, 0.0, 100.0)
+        val stepSide = Vector3(50.0, 0.0, 0.0)
         when (it.code) {
-            KeyCode.W -> camera.position = camera.position + stepForward
-            KeyCode.S -> camera.position = camera.position - stepForward
-            KeyCode.A -> camera.position = camera.position - stepSide
-            KeyCode.D -> camera.position = camera.position + stepSide
+            KeyCode.W -> camera.speed = stepForward
+            KeyCode.S -> camera.speed = -stepForward
+            KeyCode.A -> camera.speed = -stepSide
+            KeyCode.D -> camera.speed = stepSide
         }
+    }
+
+    val keyReleasedHandler = EventHandler<KeyEvent> {
+        camera.speed = Vector3.ZERO
     }
 
 }

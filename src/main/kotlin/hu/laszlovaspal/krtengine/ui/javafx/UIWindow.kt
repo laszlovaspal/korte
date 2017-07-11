@@ -34,14 +34,20 @@ class UIWindow : Application() {
         val canvas = Canvas(scene.camera.width.toDouble(), scene.camera.height.toDouble())
         val controlPanel = ControlPanel(scene, renderers, configuration)
         val fpsMeasurer = FpsMeasurer(controlPanel.fpsLabel).apply { start() }
+        val keyboardController = KeyboardController(scene.camera)
 
         primaryStage.scene = Scene(HBox(canvas, controlPanel.controls))
-        primaryStage.scene.onKeyPressed = KeyboardController(scene.camera).keyPressedHandler
+        primaryStage.scene.onKeyPressed = keyboardController.keyPressedHandler
+        primaryStage.scene.onKeyReleased = keyboardController.keyReleasedHandler
         primaryStage.isResizable = false
         primaryStage.show()
 
         object : AnimationTimer() {
+            var lastTimestamp = System.nanoTime()
             override fun handle(now: Long) {
+                val deltaTimeNanos = now - lastTimestamp
+                lastTimestamp = now
+                scene.camera.move(deltaTimeNanos)
                 controlPanel.selectedRenderer.renderFrame(frame)
                 fpsMeasurer.renderedFrames++
                 canvas.graphicsContext2D.pixelWriter.setPixelsFromFrame(frame)

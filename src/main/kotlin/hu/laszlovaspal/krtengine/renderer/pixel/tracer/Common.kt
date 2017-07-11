@@ -3,12 +3,24 @@ package hu.laszlovaspal.krtengine.renderer.pixel.tracer
 import hu.laszlovaspal.color.Color
 import hu.laszlovaspal.math.Vector3
 
-class Camera(var position: Vector3, direction: Vector3, up: Vector3) {
+interface Movable {
+    var position: Vector3
+    var direction: Vector3
+    var up: Vector3
+    var speed: Vector3
+
+    fun move(deltaTimeNanos: Long) {
+        position += (speed * (deltaTimeNanos / 1000000000.0))
+    }
+}
+
+class Camera(override var position: Vector3, direction: Vector3, up: Vector3) : Movable {
     val width = 800
     val height = 500
 
-    val direction = direction.normalize()
-    val up = up.normalize()
+    override var direction = direction.normalize()
+    override var up = up.normalize()
+    override var speed = Vector3.ZERO
 
     fun rayForPixel(x: Int, y: Int): Ray = Ray(
             position,
