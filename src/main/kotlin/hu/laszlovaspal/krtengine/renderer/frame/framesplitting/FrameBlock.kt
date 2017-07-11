@@ -16,19 +16,27 @@ class FrameBlock(private val frame: Frame,
 
     private val random = Random()
 
+    var maxAllowedDifference = 0.03
+
     private val highlightColor = Color(1.0, 0.0, 1.0, 0.5)
     private val withoutHighlight = SimpleFrame(size, size)
     var isHighlighted = false
 
     fun shouldBeRedrawn(): Boolean {
-        val sampleX = random.nextInt(size)
-        val sampleY = random.nextInt(size)
 
-        val ray = scene.camera.rayForPixel(sampleX + x, sampleY + y)
-        val sampledColorInBlock = rayTracer.trace(ray).color
-        val previousColor = Color(withoutHighlight.getArgb(sampleX, sampleY))
+        for (i in 0..configuration.randomSamplesPerBlock - 1) {
+            val sampleX = random.nextInt(size)
+            val sampleY = random.nextInt(size)
 
-        return sampledColorInBlock.difference(previousColor) > 0.03
+            val ray = scene.camera.rayForPixel(sampleX + x, sampleY + y)
+            val sampledColorInBlock = rayTracer.trace(ray).color
+            val previousColor = Color(withoutHighlight.getArgb(sampleX, sampleY))
+
+            if (sampledColorInBlock.difference(previousColor) > maxAllowedDifference) {
+                return true
+            }
+        }
+        return false
     }
 
     fun redraw() = when {

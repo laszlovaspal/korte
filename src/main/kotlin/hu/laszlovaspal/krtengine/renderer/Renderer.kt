@@ -13,7 +13,8 @@ interface Renderer : Closeable {
 
 data class RenderingConfiguration(var shadowsVisible: Boolean = true,
                                   var debug: Boolean = false,
-                                  var blockSize: Int = 10)
+                                  var blockSize: Int = 10,
+                                  var randomSamplesPerBlock: Int = 8)
 
 interface Frame {
     val width: Int

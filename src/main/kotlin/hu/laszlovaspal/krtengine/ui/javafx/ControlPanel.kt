@@ -20,8 +20,12 @@ class ControlPanel(val scene: Scene, val renderers: List<Renderer>, val configur
 
     val fpsLabel = Label("Calculating fps...")
 
-    private val settings = VBox(createRendererSelectorCombobox(), createShadowSelectorCheckbox(),
-            createDebugCheckbox(), createBlockSizeSlider()).apply {
+    private val settings = VBox(
+            createRendererSelectorCombobox(),
+            createShadowSelectorCheckbox(),
+            createDebugCheckbox(),
+            createBlockSizeSlider(),
+            createRandomSamplesPerBlockSlider()).apply {
         spacing = 4.0
     }
 
@@ -45,7 +49,7 @@ class ControlPanel(val scene: Scene, val renderers: List<Renderer>, val configur
         }
     }
 
-    private fun createBlockSizeSlider(): HBox {
+    private fun createBlockSizeSlider(): VBox {
         val label = Label("Blocksize: ")
         val valueLabel = Label(" ${configuration.blockSize}")
         val possibleValues = listOf(2, 5, 10, 20, 25, 50)
@@ -59,7 +63,23 @@ class ControlPanel(val scene: Scene, val renderers: List<Renderer>, val configur
                 valueLabel.text = " ${configuration.blockSize}"
             }
         }
-        return HBox(label, slider, valueLabel)
+        return VBox(label, HBox(slider, valueLabel))
+    }
+
+    private fun createRandomSamplesPerBlockSlider(): VBox {
+        val label = Label("Number of random samples / block: ")
+        val valueLabel = Label(" ${configuration.randomSamplesPerBlock}")
+        val slider = Slider(1.0, 24.0, configuration.randomSamplesPerBlock.toDouble()).apply {
+            majorTickUnit = 1.0
+            minorTickCount = 0
+            isShowTickMarks = true
+            isSnapToTicks = true
+            valueProperty().addListener { _ ->
+                configuration.randomSamplesPerBlock = value.toInt()
+                valueLabel.text = " ${configuration.randomSamplesPerBlock}"
+            }
+        }
+        return VBox(label, HBox(slider, valueLabel))
     }
 
     private fun createRendererSelectorCombobox(): ComboBox<Renderer> {
